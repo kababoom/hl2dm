@@ -12,6 +12,7 @@ Custom [SourceMod](https://www.sourcemod.net/) plugins for the **[S-UK] Half-Lif
 | **killsremaining** | Center message + voice line at 10 / 5 / 1 kills to the frag limit. | uses `mp_fraglimit` |
 | **deathmessages** | Custom kill-feed text in chat (per-weapon kills, suicides, world/NPC deaths). | `configs/deathmessages.cfg` — `%1` = victim, `%2` = killer |
 | **hitsound_precache** | Helper: precaches + download-registers the custom hitsound (the main hitsound plugin only precaches its built-in default). | — |
+| **tagwatch** | Log-only: records players wearing the clan tag (name + SteamID + already-whitelisted?) to build a member whitelist before enforcing tag protection. **Never kicks.** | `sm_tagwatch_tag` (`S-UK`), `sm_tagwatch_enable` (1) → `logs/tagwatch.log` |
 
 ## Install
 1. Copy `plugins/*.smx` → `addons/sourcemod/plugins/`
