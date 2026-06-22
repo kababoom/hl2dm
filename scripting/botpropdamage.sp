@@ -28,13 +28,14 @@ bool  g_tracked[2049];
 bool  g_primed[2049];
 float g_pos[2049][3];
 float g_speed[2049];
+bool  g_isOrb[2049];
 
 public Plugin myinfo =
 {
 	name        = "Bot Prop Damage",
 	author      = "HagenIT",
-	description = "Bots take damage from thrown physics props (engine skips fake clients)",
-	version     = "1.2",
+	description = "Bots take damage from thrown physics props + AR2 orbs (engine skips fake clients)",
+	version     = "1.3",
 	url         = ""
 };
 
@@ -70,6 +71,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (StrContains(classname, "prop_physics", false) == 0 || StrEqual(classname, "func_physbox", false))
 		TrackProp(entity);
+	else if (StrContains(classname, "combine_ball", false) != -1)
+		HookOrb(entity);
 }
 
 public void OnEntityDestroyed(int entity)
@@ -80,6 +83,7 @@ public void OnEntityDestroyed(int entity)
 		g_primed[entity]  = false;
 		g_speed[entity]   = 0.0;
 		g_lastHit[entity] = 0.0;
+		g_isOrb[entity]   = false;
 	}
 }
 
@@ -128,13 +132,16 @@ public Action Timer_TrackSpeed(Handle t)
 	return Plugin_Continue;
 }
 
-public void OnPropTouch(int prop, int other)
+public void OnPropTouch(int ent, int other)
 {
 	if (other < 1 || other > MaxClients)
 		return;
 	if (!IsClientInGame(other) || !IsPlayerAlive(other) || !IsFakeClient(other))
 		return;
-	ApplyHit(prop, other, "touch");
+	if (g_isOrb[ent])
+		ApplyOrbHit(ent, other);
+	else
+		ApplyHit(ent, other, "touch");
 }
 
 void ApplyHit(int prop, int bot, const char[] via)
@@ -187,4 +194,37 @@ float DistPointSeg(const float a[3], const float b[3], const float p[3])
 	closest[1] = a[1] + ab[1] * t;
 	closest[2] = a[2] + ab[2] * t;
 	return GetVectorDistance(closest, p);
+}
+
+void HookOrb(int e)
+{
+	if (e < 0 || e > 2048)
+		return;
+	SDKHook(e, SDKHook_StartTouch, OnPropTouch);
+	SDKHook(e, SDKHook_Touch, OnPropTouch);
+	g_isOrb[e] = true;
+}
+
+void ApplyOrbHit(int orb, int bot)
+{
+	if (!g_cEnable.BoolValue)
+		return;
+	if (orb < 0 || orb > 2048)
+		return;
+	float now = GetGameTime();
+	if (now - g_lastHit[orb] < g_cCooldown.FloatValue)
+		return;
+	g_lastHit[orb] = now;
+
+	int owner = 0;
+	if (HasEntProp(orb, Prop_Send, "m_hOwnerEntity"))
+		owner = GetEntPropEnt(orb, Prop_Send, "m_hOwnerEntity");
+	if (owner < 1 || owner > MaxClients || !IsClientInGame(owner))
+		owner = 0;
+
+	// orb contact = lethal dissolve (same as a real player takes), credited to the firer
+	SDKHooks_TakeDamage(bot, orb, owner, 1000.0, DMG_DISSOLVE, -1, NULL_VECTOR, NULL_VECTOR);
+
+	if (g_cDebug.BoolValue)
+		LogMessage("[botpropdmg] ORB killed bot=%N owner=%d", bot, owner);
 }
