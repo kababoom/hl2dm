@@ -23,5 +23,10 @@ Custom [SourceMod](https://www.sourcemod.net/) plugins for the **[S-UK] Half-Lif
 - Sound plugins precache in `OnMapStart`, so after a fresh load they need one map change before their sounds play (on-screen text works immediately).
 - `deathmessages.cfg` and `saysounds.cfg` are plain KeyValues — add/remove entries freely, then `sm plugins reload <name>`.
 
+## Related (client-side companions)
+These run on the **player's** Linux machine, not the server:
+- **[hl2dm-linux-texture-fix](https://github.com/kababoom/hl2dm-linux-texture-fix)** — fixes purple/missing custom-map textures on the native Linux HL2:DM client (lowercases VPK/BSP content; no Proton, keeps VAC).
+- **[linux-bhop](https://github.com/kababoom/linux-bhop)** — hold-to-bunnyhop (auto-jump) via evdev/uinput; works native or Proton.
+
 ## Credits
 Written/ported for the S‑UK HL2DM servers. `deathmessages` message style is inspired by MacDGuy's *Custom Player Death Messages*; `saysounds`/`botping`/`ragequit`/`killsremaining` replace the old EventScripts `sh_say`/`rg_botping`/`ragequit`/`kill_cd`.
