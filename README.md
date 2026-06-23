@@ -14,6 +14,7 @@ Custom [SourceMod](https://www.sourcemod.net/) plugins for the **[S-UK] Half-Lif
 | **hitsound_precache** | Helper: precaches + download-registers the custom hitsound (the main hitsound plugin only precaches its built-in default). | — |
 | **tagwatch** | Log-only: records players wearing the clan tag (name + SteamID + already-whitelisted?) to build a member whitelist before enforcing tag protection. **Never kicks.** | `sm_tagwatch_tag` (`S-UK`), `sm_tagwatch_enable` (1) → `logs/tagwatch.log` |
 | **botpropdamage** | Makes bots take damage from gravity-gunned / thrown physics props (the HL2DM engine applies impact damage to real players but skips fake clients). Measures prop speed from position deltas — vphysics doesn't update `m_vecAbsVelocity` — plus a path-sweep that catches fast props that tunnel through the hitbox. Also dissolves bots hit by **AR2 orbs** (combine balls), which the engine skips the same way. Kills credited to the thrower/firer. | `sm_botpropdmg_minspeed` (250), `dmgper100` (15), `maxdamage` (120), `radius` (45), `cooldown` (0.5), `debug` (0) |
+| **netwatch** | Logs per-player connection quality — samples ping/loss/choke every 30s: live `FLAG` lines when over threshold, plus a per-session `SESSION` summary (avg + peak) on disconnect. For spotting bad / deliberately-high-ping connections and deciding whether to act. | `sm_netwatch_loss` (3.0), `sm_netwatch_choke` (5.0), `sm_netwatch_ping` (200) → `logs/netwatch.log` |
 
 ## Install
 1. Copy `plugins/*.smx` → `addons/sourcemod/plugins/`
