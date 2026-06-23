@@ -35,7 +35,7 @@ public void Ev_Disc(Event e, const char[] n, bool db) {
             nm, GetGameTime() - g_death[c], reason, manual, (recent && manual));
     }
     if (recent && manual) {
-        PrintToChatAll("\x04%s\x01 has left in \x04rage!", nm);
+        PrintToChatAll("\x04%s\x01 RAGE-QUIT the server! \x04LOL", nm);
         EmitSoundToAll(SND);
     }
     g_death[c] = 0.0;
