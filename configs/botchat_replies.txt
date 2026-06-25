@@ -1,0 +1,239 @@
+// Basic layout by Loki 
+// It is Vital you do not have typos
+// Edit and Add a few entries at a time and test to avoid a long search for fixes
+// Match the chat to your sound triggers BOTs can trigger sounds
+// Load this script with the cvar < es_load ace_botchat > in your autoexec.cfg
+
+"bot_replies"
+{
+// DEATHS
+	"slamdeath"
+	{
+	 	"count" "1"
+		"1" "wtf"
+	}
+	"crossbowdeath"
+	{
+	 	"count" "5"
+		"1" "doh"
+		"2" "ns"
+		"3" "event_var(es_attackername) Nice One!"
+		"4" "sigh"
+		"5" "Nice One!"
+	}
+	"smgnadedeath"
+	{
+		"count" "1"
+		"1" "wtf"
+	}
+	"orbdeath"
+	{
+		"count" "4"
+		"1" "lucky"
+		"2" "hey"
+		"3" "lol"
+		"4" "hehe"
+	}
+	"stunstickdeath"
+	{
+		"count" "4"
+		"1" "im"
+		"2" "boo"
+		"3" "stunstick! ok that's the last time though"
+		"4" "dont" 
+ 	}
+	"crowbardeath"
+	{
+		"count" "5"
+		"1" "omg"
+		"2" "grr"
+		"3" "lets see you try that again!"
+		"4" "wtf"
+		"5" "hehe"
+	}
+	"pistoldeath"
+	{
+		"count" "5"
+		"1" "omg"
+		"2" "wow"
+		"3" "I'm gonna act like that didnt happen"
+		"4" "damn"
+		"5" "no" 	  
+ 	}
+	"nadedeath"
+	{
+	 	"count" "2"
+		"1" "thats why I hate nades"
+     		"2" "bang"
+	}
+	"normaldeath"
+	{
+		"count" "9"
+		"1" "shit"
+		"2" "lucky"
+		"3" "grr"
+		"4" "lol"
+		"5" "omg"
+		"6" "cry"
+		"7" "ho"
+		"8" "oops"
+     		"9" "bang"
+	}
+// KILLS
+	"shotgunkill"
+	{
+		"count" "7"
+		"1" "that gun is overpowered"
+		"2" "oh man"
+		"3" "this shotgun totally owns"
+     		"4" "hmm"
+     		"5" "omfg"
+     		"6" "no!"
+     		"7" "exterminate"  	
+	}
+	"pistolkill"
+	{
+		"count" "3"
+		"1" "owned by my little pop gun"
+		"2" "die slowly"
+		"3" "hehe"				
+	}
+	"smgnadekill"
+	{
+		"count" "6"
+		"1" "smell that? thats burnt event_var(es_username)"
+		"2" "take that"
+		"3" "burn"
+		"4" "exterminate"
+		"5" "Bombs don't kill people, explosions kill people."
+		"6" "bang"
+
+	}
+	"nadekill"
+	{
+		"count" "3"
+		"1" "event_var(es_username) U Can't Be Putting My Nades In Your Pocket M8"
+		"2" "burn"
+     		"3" "bang"
+	}
+	"normalkill"
+	{
+		"count" "20"
+		"1" "yes"
+		"2" "victory"
+		"3" "lol"
+		"4" "die human"
+		"5" "what a tool"
+		"6" "revenge"
+		"7" "hehe"
+		"8" "die human"
+		"9" "hehe"
+		"10" "yes"
+		"11" "poor soul"
+		"12" "die human"
+		"13" "woof"
+		"14" "bollox"
+		"15" "hehe"
+		"16" "too easy"
+		"17" "Ha Ha!"
+		"18" "lol"
+		"19" "ho"
+		"20" "cry"
+	}
+	"playerconnect"
+	{
+		// BOTS WILL SAY THIS TO A NEW PLAYER WHEN THE PLAYER JOINS
+		"count" "6"
+		"1" "fresh meat"
+		"2" "quits"
+		"3" "hmm I better look busy...think there might be an admin on the console!"
+		"4" "I'm smiling. This should scare you."
+		"5" "Another lamb to the slaughter"
+     		"6" "i'm scared"
+	}
+	"greetings"
+	{
+		// BOT WILL SAY THIS WHEN IT JOINS
+		"count" "8"
+		"1" "Finally its my turn"
+		"2" "hello"
+    		"3" "Time to die"
+    		"4" "Its Me!!"
+		"5" "hiya"
+		"6" "hi"
+     		"7" "run"
+     		"8" "run!"
+	}
+	"lol"
+	{
+		"count" "7"
+		"1" "lol"
+		"2" "shutup"
+		"3" "Ha Ha!"
+     		"4" "ho"
+     		"5" "hey take it easy with the hysterical laughter...you might shit yourself"
+     		"6" "man that laugh is so funny"
+     		"7" "that lol laugh has me in stitches everytime"
+	}
+	"hehe"
+	{
+		"count" "10"
+		"1" "lol"
+		"2" "shutup"
+		"3" "why"
+		"4" "shhh"
+		"5" "yes"
+		"6" "stop laughing"
+		"7" "lol"
+		"8" "fool"
+		"9" "tool"
+		"10" "I just got a VAC2 ban for playing like a bot"
+	}
+	"haha"
+	{
+		"count" "4"
+		"1" "lol"
+		"2" "Ha Ha!"
+    		"3" "hehe"
+		"4" "ho"
+	}
+	"argh"
+	{
+		"count" "2"
+		"1" "argh is right...you were owned there!"
+		"2" "hehe"
+	}
+	"timeleft"
+	{
+		"count" "5"
+		"1" "waiting"
+		"2" "haha event_var(es_username) still time to own you!!"
+		"3" "plenty timeleft don't worry"
+		"4" "timeleft = time left to kill you!!"
+		"5" "Time does'nt exist. Clocks exists."
+
+	} 
+	"BOTS"
+	{
+		"count" "2"
+		"1" "shuv"
+		"2" "event_var(es_username) is a BOT?"
+	}
+	"camper"
+	{
+		"count" "2"
+		"1" "I hate campers"
+		"2" "camping is just sniping"
+	}
+	"gg"
+	{
+		"count" "7"
+		"1" "gg"
+		"2" "gg my @$$ I lost"
+		"3" "gg you kiddin me right...I lost!!"
+		"4" "gg cus we let you win"
+		"5" "yes good game!!"
+		"6" "woof"
+		"7" "vgg" 
+	}
+}
