@@ -2,7 +2,7 @@
 #include <sdkhooks>
 #include <sdktools>
 
-#define PLUGIN_VERSION "2.4"
+#define PLUGIN_VERSION "2.5"
 
 public Plugin myinfo = 
 {
@@ -18,6 +18,7 @@ ConVar g_cvColor;
 ConVar g_cvMoveThreshold;
 ConVar g_cvChatProtectEnabled;
 ConVar g_cvWallTime;
+char g_dbgPath[PLATFORM_MAX_PATH];   // canary: logs (and clears) any stale protected flag inherited on a slot
 
 // Globals
 int g_iOriginalHealth[MAXPLAYERS+1];
@@ -35,6 +36,7 @@ public void OnPluginStart()
     g_cvWallTime = CreateConVar("sm_chatprotect_wall_time", "3", "Time in seconds a player must face a wall to get chat protection.");
     
     AutoExecConfig(true, "haplo_protect_redux_2025");
+    BuildPath(Path_SM, g_dbgPath, sizeof(g_dbgPath), "logs/redux_stale.log");
     
     // --- Timers ---
     CreateTimer(1.0, Timer_CheckWall, _, TIMER_REPEAT);
@@ -58,6 +60,18 @@ public void OnPluginStart()
 
 public void OnClientPutInServer(int client)
 {
+    // Clear any stale protection flags inherited from the previous occupant of this slot
+    // (a bot taking a slot a protected human just left would otherwise keep the flag set,
+    //  and OnTakeDamage would reflect shots off the "protected" bot).
+    if (g_bIsSpawnProtected[client] || g_bIsWallProtected[client])
+        LogToFile(g_dbgPath, "STALE-FLAG CONFIRMED: %N (%s) took client slot %d still carrying a protected flag (spawn=%d wall=%d) -> cleared. In 2.4 this %s would have reflected shots back at whoever shot it = the deflection bug.",
+            client, IsFakeClient(client) ? "BOT" : "human", client,
+            g_bIsSpawnProtected[client], g_bIsWallProtected[client], IsFakeClient(client) ? "bot" : "player");
+    g_bIsSpawnProtected[client]  = false;
+    g_bIsWallProtected[client]   = false;
+    g_bSpawnGrace[client]        = false;
+    g_iTimeLookingAtWall[client] = 0;
+    g_iOriginalHealth[client]    = 0;
     SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
     SDKHook(client, SDKHook_SpawnPost, OnSpawnPost);
 }
@@ -181,7 +195,8 @@ void DisableProtection(int client, const char[] reason)
 
 public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
 {
-    if (victim > 0 && victim <= MaxClients && IsClientInGame(victim))
+    // Never reflect off a bot — even if it somehow holds a (stale) protected flag.
+    if (victim > 0 && victim <= MaxClients && IsClientInGame(victim) && !IsFakeClient(victim))
     {
         if (g_bIsSpawnProtected[victim] || g_bIsWallProtected[victim])
         {
