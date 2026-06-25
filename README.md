@@ -6,7 +6,7 @@ Custom [SourceMod](https://www.sourcemod.net/) plugins for the **[S-UK] Half-Lif
 
 | Plugin | What it does | CVars / config |
 |---|---|---|
-| **saysounds** | Chat-trigger sounds — type a keyword (`hi`, `woohoo`, `bird`, …) and it plays a sound. 105 triggers, random pick per trigger. | `configs/saysounds.cfg` |
+| **saysounds** | Chat-trigger sounds — type a keyword (`hi`, `woohoo`, `bird`, …) and it plays a sound. 105 triggers, random pick per trigger. **Bots are rate-limited per word** (`sm_saysounds_bot_cooldown`, default 120s) so they can't spam the same sound (e.g. the "cry" baby-wail); humans are never limited. | `configs/saysounds.cfg`, `sm_saysounds_bot_cooldown` (120) |
 | **botping** | Gives bots a fake scoreboard ping so they look like real players. | `sm_botping_min` (50), `sm_botping_max` (75), `sm_botping_interval` (3.0) |
 | **ragequit_sm** | "`<name>` has left in rage!" + sound when a player dies then immediately disconnects. | `sm_ragequit_maxdelay` (10.0) |
 | **killsremaining** | Center message + voice line at 10 / 5 / 1 kills to the frag limit. | uses `mp_fraglimit` |
