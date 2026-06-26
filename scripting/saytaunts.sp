@@ -28,7 +28,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	g_enable   = CreateConVar("sm_saytaunts_enable",   "1",   "Enable chat-keyword taunts (1/0)");
-	g_cooldown = CreateConVar("sm_saytaunts_cooldown", "3.0", "Minimum seconds between taunts");
+	g_cooldown = CreateConVar("sm_saytaunts_cooldown", "3.0", "Minimum seconds between BOT-triggered taunts (humans are never limited)");
 	AutoExecConfig(true, "saytaunts");
 	AddCommandListener(OnSay, "say");
 	AddCommandListener(OnSay, "say_team");
@@ -84,10 +84,13 @@ public Action OnSay(int client, const char[] command, int args)
 	{
 		if (StrContains(text, g_keyword[t]) != -1)
 		{
-			float now = GetGameTime();
-			if (now - g_last < g_cooldown.FloatValue)
-				return Plugin_Continue;
-			g_last = now;
+			if (IsFakeClient(client))   // cooldown applies to bot chatter only; humans are never limited
+			{
+				float now = GetGameTime();
+				if (now - g_last < g_cooldown.FloatValue)
+					return Plugin_Continue;
+				g_last = now;
+			}
 			RequestFrame(Frame_Reply, t);   // next frame, so the player's own line prints first
 			return Plugin_Continue;
 		}
