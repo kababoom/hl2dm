@@ -37,7 +37,8 @@ public void OnPluginStart()
 
 public void OnConfigsExecuted()
 {
-	LoadTaunts();   // pick up edits on a map change / config reload
+	LoadTaunts();       // pick up edits on a map change / config reload
+	g_last = -1000.0;   // GetGameTime() resets to 0 each map; clear the stale stamp or the cooldown blocks every taunt forever
 }
 
 void LoadTaunts()
