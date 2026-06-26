@@ -43,6 +43,8 @@ public void OnMapStart()
 {
 	PrecacheSound(HSND, true);
 	AddFileToDownloadsTable(HSNDFILE);
+	for (int i = 1; i <= MaxClients; i++)
+		g_suppress[i] = 0.0;   // GetGameTime() resets each map; clear stale suppress windows or the hitsound stays muted
 }
 
 public void OnClientPutInServer(int client)
