@@ -3,19 +3,20 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-/* ColorUpSound — restores the level-up sound + center message that the old
- * EventScripts colorup played but the SM colorup.smx port dropped. colorup.smx
- * still handles the player colors; this re-adds the audible/visible
- * "You're now level N - <color>" feedback at the same kill thresholds, only on
- * the transition into a new level (not every kill). Matches the original:
- *   levels  10 / 20 / 30 / 40 / 50  ->  Yellow / Green / Blue / Magenta / Red
- *   sound   doors/latchunlocked1.wav  (stock HL2, no download needed)
- * The sound is emitted to the leveling player only, like the ES es_cexec play. */
+/* ColorUpSound — restores the level-up feedback the third-party colorup.smx
+ * (kill-count player colors) lost when it was ported off EventScripts: at
+ * 10/20/30/40/50 kills it plays a triumphant sound + a "You're now level N -
+ * <color>" center message to that player, once per level (on the transition).
+ * Sound = sanctuaryuk/winner.mp3 (the old Mani "winner" victory sting — it was
+ * left only in downloads.ini after Mani was retired, so this re-uses it and
+ * re-registers the download to stay self-contained). Companion to colorup.smx,
+ * which still does the colors. */
 
-#define SOUND "doors/latchunlocked1.wav"
+#define SOUND     "sanctuaryuk/winner.mp3"
+#define SOUNDFILE "sound/sanctuaryuk/winner.mp3"
 
 ConVar g_enable;
-int  g_levels[5]    = { 10, 20, 30, 40, 50 };
+int  g_levels[5]     = { 10, 20, 30, 40, 50 };
 char g_colors[5][16] = { "Yellow", "Green", "Blue", "Magenta", "Red" };
 int  g_level[MAXPLAYERS + 1];
 
@@ -23,8 +24,8 @@ public Plugin myinfo =
 {
 	name        = "ColorUpSound",
 	author      = "HagenIT",
-	description = "Level-up sound + message for colorup (restores the dropped ES behavior)",
-	version     = "1.0",
+	description = "Level-up sound + message for colorup",
+	version     = "1.1",
 	url         = ""
 };
 
@@ -38,8 +39,9 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 	PrecacheSound(SOUND, true);
+	AddFileToDownloadsTable(SOUNDFILE);   // already in downloads.ini, but keeps the plugin self-contained
 	for (int i = 1; i <= MaxClients; i++)
-		g_level[i] = 0;          // frags reset on map change -> level resets too
+		g_level[i] = 0;
 }
 
 public void OnClientPutInServer(int client)
@@ -47,17 +49,24 @@ public void OnClientPutInServer(int client)
 	g_level[client] = 0;
 }
 
-public void Evt_Death(Event e, const char[] name, bool dontBroadcast)
+void DoLevelUp(int client, int lvl)
+{
+	PrintCenterText(client, "You're now level %d - %s", lvl, g_colors[lvl - 1]);
+	PrecacheSound(SOUND, true);           // safety for a mid-map plugin reload
+	EmitSoundToClient(client, SOUND);
+}
+
+public Action Evt_Death(Event e, const char[] name, bool dontBroadcast)
 {
 	if (!g_enable.BoolValue)
-		return;
+		return Plugin_Continue;
 
 	int attacker = GetClientOfUserId(e.GetInt("attacker"));
 	int victim   = GetClientOfUserId(e.GetInt("userid"));
 	if (attacker < 1 || attacker > MaxClients || !IsClientInGame(attacker))
-		return;
-	if (attacker == victim || IsFakeClient(attacker))   // skip suicides + bots (bots can't hear/see)
-		return;
+		return Plugin_Continue;
+	if (attacker == victim || IsFakeClient(attacker))
+		return Plugin_Continue;
 
 	int frags = GetClientFrags(attacker);
 	int lvl = 0;
@@ -65,10 +74,10 @@ public void Evt_Death(Event e, const char[] name, bool dontBroadcast)
 		if (frags >= g_levels[i])
 			lvl = i + 1;
 
-	if (lvl > g_level[attacker])                          // only on the transition into a new level
+	if (lvl > g_level[attacker])
 	{
 		g_level[attacker] = lvl;
-		PrintCenterText(attacker, "You're now level %d - %s", lvl, g_colors[lvl - 1]);
-		EmitSoundToClient(attacker, SOUND);
+		DoLevelUp(attacker, lvl);
 	}
+	return Plugin_Continue;
 }
